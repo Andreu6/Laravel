@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 use App\Models\Product;
 
@@ -35,23 +36,15 @@ class ProductController extends Controller
     public function updateProduct(Request $request) {
         $request->validate(['id' => 'required', 'name' => 'required', 'stock' => 'required', 'price' => 'required', 'category' => 'required']);
 
-        $post = Product::update(
-            ['name' => $request->name, 'stock' => $request->stock, 'price' => $request->price, 'category' => $request->category],
-            ['id' => $request->id]
-        );
-        if ($post) {
-            $data = [
-                'status' => '1',
-                'msg' => 'Se ha actualizado el producto'
-            ];
-        } else {
-            $data = [
-                'status' => '0',
-                'msg' => 'No se ha actualizado el producto'
-            ];
-        }
-        return response()->json($data);
+        DB::update('update products set name = ?, stock = ?, price = ?, category = ? WHERE id = ?', 
+        [$request -> name, $request -> stock, $request -> price, $request -> category, $request -> id]);
+
+        return response()->json([
+            "status" => 1,
+            "msg" => "Update Exitoso"
+        ]);
     }
+
 
     public function deleteProduct(Request $request)
     {

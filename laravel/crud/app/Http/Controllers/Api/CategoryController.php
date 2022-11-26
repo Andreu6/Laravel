@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 use App\Models\Category;
 
@@ -30,24 +31,15 @@ class CategoryController extends Controller
 
     public function updateCategory(Request $request)
     {
-        $request->validate(['id' => 'required', 'name' => 'required', 'description' => 'required']);
-            
-        $post = Category::update(
-            ['name' => $request->name, 'description' => $request->description],
-            ['id' => $request->id]
-        );
-        if ($post) {
-            $data = [
-                'status' => '1',
-                'msg' => 'Se ha actualizado la categoría'
-            ];
-        } else {
-            $data = [
-                'status' => '0',
-                'msg' => 'No se ha actualizado la categoría'
-            ];
-        }
-        return response()->json($data);
+       $request->validate(['id' => 'required', 'name' => 'required', 'description' => 'required']);
+
+        DB::update('update categorys set name = ?, description = ? WHERE id = ?', 
+        [$request -> name, $request -> description, $request -> id]);
+
+        return response()->json([
+            "status" => 1,
+            "msg" => "Update Exitoso"
+        ]);
     }
 
     public function deleteCategory(Request $request)
